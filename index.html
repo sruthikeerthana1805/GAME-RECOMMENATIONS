@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Finder - Find Your Perfect Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .credit-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .credit-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .credit-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 1em;
+            line-height: 1.6;
+        }
+
+        .credit-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .credit-label {
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .credit-value {
+            font-weight: 500;
+        }
+
+        .credit-email {
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(255,255,255,0.5);
+            transition: all 0.3s ease;
+        }
+
+        .credit-email:hover {
+            border-bottom: 1px solid white;
+            opacity: 0.8;
+        }
+
+        .credit-college {
+            font-size: 0.95em;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            font-size: 2em;
+            color: #667eea;
+        }
+
+        .logo-text {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .region-selector {
+            position: relative;
+        }
+
+        .region-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .region-display:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .region-dropdown {
+            display: none;
+            position: absolute;
+            top: 110%;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            min-width: 180px;
+            z-index: 100;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .region-dropdown.active {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .region-option {
+            padding: 12px 18px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .region-option:last-child {
+            border-bottom: none;
+        }
+
+        .region-option:hover {
+            background: #f8f9ff;
+        }
+
+        .region-option.selected {
+            background: #e8ecff;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .question-container {
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-title {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option-card {
+            padding: 25px;
+            border: 3px solid #e0e0e0;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .option-card.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .option-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .option-desc {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .benefit-card {
+            padding: 20px;
+            border: 3px solid #e0e0e0;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .benefit-card:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .benefit-card.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .results-container {
+            display: none;
+        }
+
+        .results-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .result-count {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .result-filters {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .filter-tag {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: #667eea;
+            font-weight: 500;
+            border: 2px solid #e8ecff;
+        }
+
+        .game-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .game-title-section {
+            flex: 1;
+        }
+
+        .game-title {
+            font-size: 1.8em;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .region-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .badge-top {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+        }
+
+        .badge-popular {
+            background: linear-gradient(135deg, #ffa502, #ff7675);
+            color: white;
+        }
+
+        .badge-trending {
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+            color: white;
+        }
+
+        .badge-global {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .game-rating {
+            font-size: 1.2em;
+            color: #ffa500;
+        }
+
+        .game-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .meta-tag {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .game-benefits {
+            margin-top: 15px;
+        }
+
+        .benefit-tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin: 5px 5px 5px 0;
+        }
+
+        .download-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .download-btn {
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9em;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-playstore {
+            background: linear-gradient(135deg, #34A853, #0F9D58);
+            color: white;
+        }
+
+        .btn-appstore {
+            background: linear-gradient(135deg, #007AFF, #0051D5);
+            color: white;
+        }
+
+        .btn-steam {
+            background: linear-gradient(135deg, #171A21, #2A475E);
+            color: white;
+        }
+
+        .btn-website {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .game-reason {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 10px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .reason-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .home-screen {
+            text-align: center;
+        }
+
+        .home-screen.hidden {
+            display: none;
+        }
+
+        .hero-emoji {
+            font-size: 5em;
+            margin: 30px 0;
+        }
+
+        .start-btn {
+            padding: 20px 60px;
+            font-size: 1.3em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 30px 0;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .time-indicator {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            .credit-banner {
+                padding: 15px;
+            }
+
+            .credit-title {
+                font-size: 1.3em;
+            }
+
+            .credit-info {
+                font-size: 0.9em;
+            }
+
+            .credit-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .credit-college {
+                font-size: 0.85em;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .question-title {
+                font-size: 1.3em;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .game-title {
+                font-size: 1.4em;
+            }
+
+            .region-dropdown {
+                right: auto;
+                left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Credit Banner -->
+        <div class="credit-banner">
+            <div class="credit-title">🎮 GAMING RECOMMENDATIONS 🎮</div>
+            <div class="credit-info">
+                <div class="credit-row">
+                    <span class="credit-label">Published by:</span>
+                    <span class="credit-value">CHITTEPU SRUTHI KEERTHANA</span>
+                </div>
+                <div class="credit-row">
+                    <span class="credit-label">Department:</span>
+                    <span class="credit-value">CSE</span>
+                    <span style="opacity: 0.6;">|</span>
+                    <span class="credit-label">College:</span>
+                    <span class="credit-value">BVRIT Hyderabad</span>
+                </div>
+                <div class="credit-college">
+                    BVRIT HYDERABAD COLLEGE OF ENGINEERING FOR WOMEN
+                </div>
+                <div class="credit-row" style="margin-top: 10px;">
+                    <span class="credit-label">📧 Contact:</span>
+                    <a href="mailto:24wh1a05an@bvrithyderabad.edu.in" class="credit-email">24wh1a05an@bvrithyderabad.edu.in</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header with Region Selector -->
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo">🎮</div>
+                <div class="logo-text">Game Finder</div>
+            </div>
+            <div class="region-selector">
+                <div class="region-display" onclick="toggleRegionDropdown()">
+                    🌍 <span id="currentRegion">India</span> <span style="font-size: 0.8em;">▼</span>
+                </div>
+                <div class="region-dropdown" id="regionDropdown">
+                    <div class="region-option selected" onclick="selectRegion('India')">🇮🇳 India</div>
+                    <div class="region-option" onclick="selectRegion('USA')">🇺🇸 USA</div>
+                    <div class="region-option" onclick="selectRegion('Japan')">🇯🇵 Japan</div>
+                    <div class="region-option" onclick="selectRegion('UK')">🇬🇧 UK</div>
+                    <div class="region-option" onclick="selectRegion('Brazil')">🇧🇷 Brazil</div>
+                    <div class="region-option" onclick="selectRegion('Germany')">🇩🇪 Germany</div>
+                    <div class="region-option" onclick="selectRegion('Global')">🌐 Global (All)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Home Screen -->
+        <div class="home-screen" id="homeScreen">
+            <div class="hero-emoji">🎯🎲🎪</div>
+            <h2 style="color: #667eea; margin-bottom: 20px;">Find Your Perfect Game in 4 Steps!</h2>
+            <button class="start-btn" onclick="startQuiz()">START QUIZ</button>
+            <div class="time-indicator">⏱️ Takes about 1 minute</div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quizContainer" style="display: none;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+
+            <!-- Question 1: Game Type -->
+            <div class="question-container active" id="q1">
+                <div class="question-title">🎮 What kind of games do you want?</div>
+                <div class="options">
+                    <div class="option-card" onclick="selectOption(1, 'Video Games')">
+                        <div class="option-icon">🎮</div>
+                        <div class="option-title">Video Games</div>
+                        <div class="option-desc">PC & Console games</div>
+                    </div>
+                    <div class="option-card" onclick="selectOption(1, 'Mobile Games')">
+                        <div class="option-icon">📱</div>
+                        <div class="option-title">Mobile Games</div>
+                        <div class="option-desc">Smartphone & Tablet</div>
+                    </div>
+                    <div class="option-card" onclick="selectOption(1, 'Fun Games')">
+                        <div class="option-icon">🎪</div>
+                        <div class="option-title">Fun Games</div>
+                        <div class="option-desc">Casual & Party games</div>
+                    </div>
+                    <div class="option-card" onclick="selectOption(1, 'Time-Pass Games')">
+                        <div class="option-icon">⏰</div>
+                        <div class="option-title">Time-Pass Games</div>
+                        <div class="option-desc">Quick & Easy games</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 2: Platform -->
+            <div class="question-container" id="q2">
+                <div class="question-title">💻 Where do you want to play?</div>
+                <div class="options">
+                    <div class="option-card" onclick="selectOption(2, 'PC')">
+                        <div class="option-icon">💻</div>
+                        <div class="option-title">PC</div>
+                        <div class="option-desc">Desktop & Laptop</div>
+                    </div>
+                    <div class="option-card" onclick="selectOption(2, 'Console')">
+                        <div class="option-icon">🎮</div>
+                        <div class="option-title">Console</div>
+                        <div class="option-desc">PlayStation, Xbox, Nintendo</div>
+                    </div>
+                    <div class="option-card" onclick="selectOption(2, 'Mobile')">
+                        <div class="option-icon">📱</div>
+                        <div class="option-title">Mobile</div>
+                        <div class="option-desc">Phone & Tablet</div>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button class="btn-secondary" onclick="previousQuestion(2)">← Back</button>
+                </div>
+            </div>
+
+            <!-- Question 3: Age Group -->
+            <div class="question-container" id="q3">
+                <div class="question-title">😊 Who is going to play?</div>
+                <div class="options">
+                    <div class="option-card" onclick="selectOption(3, 'Kids')">
+                        <div class="option-icon">👶</div>
+                        <div class="option-title">Kids (5-10)</div>
+                        <div class="option-desc">Fun & safe games</div>
+                    </div>
+                    <div class="option-card" onclick="selectOption(3, 'Teens')">
+                        <div class="option-icon">🧑</div>
+                        <div class="option-title">Teens (11-17)</div>
+                        <div class="option-desc">Adventure & challenge</div>
+                    </div>
+                    <div class="option-card" onclick="selectOption(3, 'Adults')">
+                        <div class="option-icon">👨</div>
+                        <div class="option-title">Adults (18-40)</div>
+                        <div class="option-desc">Strategy & action</div>
+                    </div>
+                    <div class="option-card" onclick="selectOption(3, 'Seniors')">
+                        <div class="option-icon">👴</div>
+                        <div class="option-title">Seniors (40+)</div>
+                        <div class="option-desc">Relaxing & classic</div>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button class="btn-secondary" onclick="previousQuestion(3)">← Back</button>
+                </div>
+            </div>
+
+            <!-- Question 4: Benefits -->
+            <div class="question-container" id="q4">
+                <div class="question-title">✨ What benefits do you want? (Select all that apply)</div>
+                <div class="benefits-grid">
+                    <div class="benefit-card" onclick="toggleBenefit(this, 'Brain & Memory')">
+                        <div class="option-icon">🧠</div>
+                        <div>Brain & Memory</div>
+                    </div>
+                    <div class="benefit-card" onclick="toggleBenefit(this, 'Teamwork')">
+                        <div class="option-icon">👥</div>
+                        <div>Teamwork</div>
+                    </div>
+                    <div class="benefit-card" onclick="toggleBenefit(this, 'Creativity')">
+                        <div class="option-icon">🎨</div>
+                        <div>Creativity</div>
+                    </div>
+                    <div class="benefit-card" onclick="toggleBenefit(this, 'Focus & Reflexes')">
+                        <div class="option-icon">⚡</div>
+                        <div>Focus & Reflexes</div>
+                    </div>
+                    <div class="benefit-card" onclick="toggleBenefit(this, 'Stress Relief')">
+                        <div class="option-icon">😌</div>
+                        <div>Stress Relief</div>
+                    </div>
+                    <div class="benefit-card" onclick="toggleBenefit(this, 'Problem Solving')">
+                        <div class="option-icon">🧩</div>
+                        <div>Problem Solving</div>
+                    </div>
+                    <div class="benefit-card" onclick="toggleBenefit(this, 'Hand-Eye Coordination')">
+                        <div class="option-icon">🎯</div>
+                        <div>Hand-Eye Coordination</div>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button class="btn-secondary" onclick="previousQuestion(4)">← Back</button>
+                    <button class="btn-primary" onclick="showResults()">SHOW MY GAMES 🎉</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div class="results-container" id="resultsContainer">
+            <div class="result-header">
+                <div class="result-count" id="resultCount">🎉 We found games for you!</div>
+                <div class="result-filters" id="resultFilters"></div>
+            </div>
+            <div id="gamesList"></div>
+            <div class="buttons">
+                <button class="btn-primary" onclick="restartQuiz()">🔄 START NEW SEARCH</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // User answers storage
+        const userAnswers = {
+            gameType: '',
+            platform: '',
+            ageGroup: '',
+            benefits: [],
+            region: 'India'
+        };
+
+        // Region profiles
+        const REGION_PROFILES = {
+            India: {
+                avgDeviceLevel: 2,
+                limitedData: true,
+                prefersFree: true,
+                primaryLanguage: 'Hindi'
+            },
+            USA: {
+                avgDeviceLevel: 3,
+                limitedData: false,
+                prefersFree: false,
+                primaryLanguage: 'English'
+            },
+            Japan: {
+                avgDeviceLevel: 3,
+                limitedData: false,
+                prefersFree: false,
+                primaryLanguage: 'Japanese'
+            },
+            UK: {
+                avgDeviceLevel: 3,
+                limitedData: false,
+                prefersFree: false,
+                primaryLanguage: 'English'
+            },
+            Brazil: {
+                avgDeviceLevel: 2,
+                limitedData: true,
+                prefersFree: true,
+                primaryLanguage: 'Portuguese'
+            },
+            Germany: {
+                avgDeviceLevel: 3,
+                limitedData: false,
+                prefersFree: false,
+                primaryLanguage: 'German'
+            },
+            Global: {
+                avgDeviceLevel: 2,
+                limitedData: false,
+                prefersFree: false,
+                primaryLanguage: 'English'
+            }
+        };
+
+        // Enhanced game database with region data and download links
+        const games = [
+            {
+                name: 'Ludo King',
+                platforms: ['PC', 'Mobile'],
+                ageGroups: ['Kids', 'Teens', 'Adults', 'Seniors'],
+                types: ['Mobile Games', 'Fun Games', 'Time-Pass Games'],
+                benefits: ['Problem Solving', 'Teamwork', 'Stress Relief'],
+                rating: '⭐⭐⭐⭐',
+                price: 'Free',
+                safety: 'Very Safe',
+                difficulty: 'Easy',
+                deviceRequirement: 1,
+                dataUsage: 'Low',
+                regionPopularity: { India: 1.0, USA: 0.2, Japan: 0.1, UK: 0.3, Brazil: 0.7, Germany: 0.2, Global: 0.5 },
+                languages: ['English', 'Hindi'],
+                downloadLinks: {
+                    playStore: 'https://play.google.com/store/apps/details?id=com.ludo.king',
+                    appStore: 'https://apps.apple.com/app/ludo-king/id993090598',
+                    steam: 'https://store.steampowered.com/app/1150530/Ludo_King/',
+                    website: 'https://www.ludoking.com/'
+                }
+            },
+            {
+                name: 'BGMI (Battlegrounds Mobile India)',
+                platforms: ['Mobile'],
+                ageGroups: ['Teens', 'Adults'],
+                types: ['Mobile Games', 'Video Games'],
+                benefits: ['Teamwork', 'Focus & Reflexes', 'Hand-Eye Coordination'],
+                rating: '⭐⭐⭐⭐',
+                price: 'Free',
+                safety: 'Safe',
+                difficulty: 'Medium',
+                deviceRequirement: 2,
+                dataUsage: 'High',
+                regionPopularity: { India: 1.0, USA: 0.0, Japan: 0.0, UK: 0.0, Brazil: 0.0, Germany: 0.0, Global: 0.3 },
+                blockedRegions: ['USA', 'Japan', 'UK', 'Germany'],
+                languages: ['English', 'Hindi'],
+                downloadLinks: {
+                    playStore: 'https://play.google.com/store/apps/details?id=com.pubg.imobile',
+                    website: 'https://www.battlegroundsmobileindia.com/'
+                }
+            },
+            {
+                name: 'Chess.com',
+                platforms: ['PC', 'Mobile'],
+                ageGroups: ['Kids', 'Teens', 'Adults', 'Seniors'],
+                types: ['Time-Pass Games', 'Mobile Games'],
+                benefits: ['Brain & Memory', 'Problem Solving', 'Focus & Reflexes'],
+                rating: '⭐⭐⭐⭐⭐',
+                price: 'Free',
+                safety: 'Very Safe',
+                difficulty: 'Medium',
+                deviceRequirement: 1,
+                dataUsage: 'Low',
+                regionPopularity: { India: 0.8, USA: 0.9, Japan: 0.6, UK: 0.8, Brazil: 0.7, Germany: 0.8, Global: 0.9 },
+                languages: ['English', 'Hindi', 'Japanese', 'German', 'Portuguese'],
+                downloadLinks: {
+                    playStore: 'https://play.google.com/store/apps/details?id=com.chess',
+                    appStore: 'https://apps.apple.com/app/chess-play-learn/id329218549',
+                    website: 'https://www.chess.com/'
+                }
+            },
+            {
+                name: 'Candy Crush Saga',
+                platforms: ['Mobile'],
+                ageGroups: ['Kids', 'Teens', 'Adults', 'Seniors'],
+                types: ['Mobile Games', 'Time-Pass Games'],
+                benefits: ['Focus & Reflexes', 'Stress Relief', 'Problem Solving'],
+                rating: '⭐⭐⭐⭐',
+                price: 'Free',
+                safety: 'Very Safe',
+                difficulty: 'Easy',
+                deviceRequirement: 1,
+                dataUsage: 'Low',
+                regionPopularity: { India: 0.9, USA: 0.8, Japan: 0.7, UK: 0.8, Brazil: 0.9, Germany: 0.7, Global: 0.9 },
+                languages: ['English', 'Hindi', 'Japanese', 'German', 'Portuguese'],
+                downloadLinks: {
+                    playStore: 'https://play.google.com/store/apps/details?id=com.king.candycrushsaga',
+                    appStore: 'https://apps.apple.com/app/candy-crush-saga/id553834731',
+                    website: 'https://www.king.com/game/candycrush'
+                }
+            },
+            {
+                name: 'Minecraft',
+                platforms: ['PC', 'Console', 'Mobile'],
+                ageGroups: ['Kids', 'Teens', 'Adults'],
+                types: ['Video Games', 'Fun Games'],
+                benefits: ['Creativity', 'Problem Solving', 'Stress Relief'],
+                rating: '⭐⭐⭐⭐⭐',
+                price: 'Paid',
+                safety: 'Very Safe',
+                difficulty: 'Easy',
+                deviceRequirement: 2,
+                dataUsage: 'Medium',
+                regionPopularity: { India: 0.7, USA: 1.0, Japan: 0.8, UK: 0.9, Brazil: 0.8, Germany: 0.9, Global: 1.0 },
+                languages: ['English', 'Japanese', 'German', 'Portuguese'],
+                downloadLinks: {
+                    playStore: 'https://play.google.com/store/apps/details?id=com.mojang.minecraftpe',
+                    appStore: 'https://apps.apple.com/app/minecraft/id479516143',
+                    steam: 'https://store.steampowered.com/app/1794680/Minecraft/',
+                    website: 'https://www.minecraft.net/'
+                }
+            },
+            {
+                name: 'Wordle',
+                platforms: ['PC', 'Mobile'],
+                ageGroups: ['Teens', 'Adults', 'Seniors'],
+                types: ['Time-Pass Games', 'Mobile Games'],
+                benefits: ['Brain & Memory', 'Problem Solving'],
+                rating: '⭐⭐⭐⭐',
+                price: 'Free',
+                safety: 'Very Safe',
+                difficulty: 'Easy',
+                deviceRequirement: 1,
+                dataUsage: 'Low',
+                regionPopularity: { India: 0.6, USA: 1.0, Japan: 0.4, UK: 0.9, Brazil: 0.5, Germany: 0.7, Global: 0.8 },
+                languages: ['English'],
+                downloadLinks: {
+                    website: 'https://www.nytimes.com/games/wordle/index.html'
+                }
+            },
+            {
+                name: 'Roblox',
+                platforms: ['PC', 'Mobile', 'Console'],
+                ageGroups: ['Kids', 'Teens'],
+                types: ['Video Games', 'Fun Games'],
+                benefits: ['Creativity', 'Teamwork', 'Problem Solving'],
+                rating: '⭐⭐⭐⭐',
+                price: 'Free',
+                safety: 'Safe',
+                difficulty: 'Easy',
+                deviceRequirement: 2,
+                dataUsage: 'Medium',
+                regionPopularity: { India: 0.6, USA: 1.0, Japan: 0.5, UK: 0.8, Brazil: 0.7, Germany: 0.6, Global: 0.9 },
+                languages: ['English', 'German', 'Portuguese'],
+                downloadLinks: {
+                    playStore: 'https://play.google.com/store/apps/details?id=com.roblox.client',
+                    appStore: 'https://apps.apple.com/app/roblox/id431946152',
+                    website: 'https://www.roblox.com/'
+                }
+            },
+            {
+                name: 'Sudoku',
+                platforms: ['PC', 'Mobile'],
+                ageGroups: ['Adults', 'Seniors'],
+                types: ['Time-Pass Games', 'Mobile Games'],
+                benefits: ['Brain & Memory', 'Problem Solving', 'Focus & Reflexes'],
+                rating: '⭐⭐⭐⭐',
+                price: 'Free',
+                safety: 'Very Safe',
+                difficulty: 'Medium',
+                deviceRequirement: 1,
+                dataUsage: 'Low',
+                regionPopularity: { India: 0.7, USA: 0.7, Japan: 0.9, UK: 0.7, Brazil: 0.6, Germany: 0.8, Global: 0.8 },
+                languages: ['English', 'Japanese', 'German'],
+                downloadLinks: {
+                    playStore: 'https://play.google.com/store/apps/details?id=com.easybrain.sudoku.android',
+                    appStore: 'https://apps.apple.com/app/sudoku-com-brain-puzzle/id1442073535',
+                    website: 'https://sudoku.com/'
+                }
+            },
+            {
+                name: 'Animal Crossing',
+                platforms: ['Console'],
+                ageGroups: ['Kids', 'Teens', 'Adults'],
+                types: ['Video Games', 'Fun Games'],
+                benefits: ['Stress Relief', 'Creativity'],
+                rating: '⭐⭐⭐⭐⭐',
+                price: 'Paid',
+                safety: 'Very Safe',
+                difficulty: 'Easy',
+                deviceRequirement: 3,
+                dataUsage: 'Low',
+                regionPopularity: { India: 0.3, USA: 0.8, Japan: 1.0, UK: 0.7, Brazil: 0.4, Germany: 0.6, Global: 0.8 },
+                languages: ['English', 'Japanese', 'German'],
+                downloadLinks: {
+                    website: 'https://www.animal-crossing.com/'
+                }
+            },
+            {
+                name: 'Free Fire',
+                platforms: ['Mobile'],
+                ageGroups: ['Teens', 'Adults'],
+                types: ['Mobile Games', 'Video Games'],
+                benefits: ['Teamwork', 'Focus & Reflexes', 'Hand-Eye Coordination'],
+                rating: '⭐⭐⭐',
+                price: 'Free',
+                safety: 'Safe',
+                difficulty: 'Medium',
+                deviceRequirement: 1,
+                dataUsage: 'High',
+                regionPopularity: { India: 0.9, USA: 0.3, Japan: 0.2, UK: 0.3, Brazil: 1.0, Germany: 0.2, Global: 0.6 },
+                languages: ['English', 'Hindi', 'Portuguese'],
+                downloadLinks: {
+                    playStore: 'https://play.google.com/store/apps/details?id=com.dts.freefireth',
+                    appStore: 'https://apps.apple.com/app/free-fire-the-chaos/id1300146617',
+                    website: 'https://ff.garena.com/'
+                }
+            },
+            {
+                name: 'Portal 2',
+                platforms: ['PC', 'Console'],
+                ageGroups: ['Teens', 'Adults'],
+                types: ['Video Games'],
+                benefits: ['Problem Solving', 'Focus & Reflexes', 'Teamwork'],
+                rating: '⭐⭐⭐⭐⭐',
+                price: 'Paid',
+                safety: 'Safe',
+                difficulty: 'Medium',
+                deviceRequirement: 3,
+                dataUsage: 'Low',
+                regionPopularity: { India: 0.4, USA: 0.9, Japan: 0.6, UK: 0.8, Brazil: 0.5, Germany: 0.8, Global: 0.8 },
+                languages: ['English', 'Japanese', 'German'],
+                downloadLinks: {
+                    steam: 'https://store.steampowered.com/app/620/Portal_2/',
+                    website: 'https://www.thinkwithportals.com/'
+                }
+            },
+            {
+                name: 'Genshin Impact',
+                platforms: ['PC', 'Mobile', 'Console'],
+                ageGroups: ['Teens', 'Adults'],
+                types: ['Video Games', 'Mobile Games'],
+                benefits: ['Creativity', 'Stress Relief', 'Problem Solving'],
+                rating: '⭐⭐⭐⭐',
+                price: 'Free',
+                safety: 'Safe',
+                difficulty: 'Medium',
+                deviceRequirement: 3,
+                dataUsage: 'High',
+                regionPopularity: { India: 0.6, USA: 0.7, Japan: 1.0, UK: 0.6, Brazil: 0.5, Germany: 0.6, Global: 0.9 },
+                languages: ['English', 'Japanese', 'German'],
+                downloadLinks: {
+                    playStore: 'https://play.google.com/store/apps/details?id=com.miHoYo.GenshinImpact',
+                    appStore: 'https://apps.apple.com/app/genshin-impact/id1517783697',
+                    website: 'https://genshin.hoyoverse.com/'
+                }
+            },
+            {
+                name: 'Among Us',
+                platforms: ['PC', 'Mobile'],
+                ageGroups: ['Teens', 'Adults'],
+                types: ['Mobile Games', 'Fun Games'],
+                benefits: ['Teamwork', 'Problem Solving'],
+                rating: '⭐⭐⭐⭐',
+                price: 'Free',
+                safety: 'Safe',
+                difficulty: 'Easy',
+                deviceRequirement: 1,
+                dataUsage: 'Low',
+                regionPopularity: { India: 0.7, USA: 0.9, Japan: 0.6, UK: 0.8, Brazil: 0.8, Germany: 0.7, Global: 0.9 },
+                languages: ['English', 'German', 'Portuguese'],
+                downloadLinks: {
+                    playStore: 'https://play.google.com/store/apps/details?id=com.innersloth.spacemafia',
+                    appStore: 'https://apps.apple.com/app/among-us/id1351168404',
+                    steam: 'https://store.steampowered.com/app/945360/Among_Us/',
+                    website: 'https://www.innersloth.com/games/among-us/'
+                }
+            },
+            {
+                name: 'Stardew Valley',
+                platforms: ['PC', 'Console', 'Mobile'],
+                ageGroups: ['Teens', 'Adults', 'Seniors'],
+                types: ['Video Games', 'Fun Games'],
+                benefits: ['Stress Relief', 'Creativity', 'Problem Solving'],
+                rating: '⭐⭐⭐⭐⭐',
+                price: 'Paid',
+                safety: 'Very Safe',
+                difficulty: 'Easy',
+                deviceRequirement: 2,
+                dataUsage: 'Low',
+                regionPopularity: { India: 0.5, USA: 0.9, Japan: 0.7, UK: 0.8, Brazil: 0.6, Germany: 0.8, Global: 0.8 },
+                languages: ['English', 'Japanese', 'German', 'Portuguese'],
+                downloadLinks: {
+                    playStore: 'https://play.google.com/store/apps/details?id=com.chucklefish.stardewvalley',
+                    appStore: 'https://apps.apple.com/app/stardew-valley/id1406710800',
+                    steam: 'https://store.steampowered.com/app/413150/Stardew_Valley/',
+                    website: 'https://www.stardewvalley.net/'
+                }
+            },
+            {
+                name: 'Mario Kart',
+                platforms: ['Console'],
+                ageGroups: ['Kids', 'Teens', 'Adults'],
+                types: ['Video Games', 'Fun Games'],
+                benefits: ['Hand-Eye Coordination', 'Focus & Reflexes', 'Teamwork'],
+                rating: '⭐⭐⭐⭐⭐',
+                price: 'Paid',
+                safety: 'Very Safe',
+                difficulty: 'Easy',
+                deviceRequirement: 3,
+                dataUsage: 'Low',
+                regionPopularity: { India: 0.4, USA: 0.8, Japan: 1.0, UK: 0.7, Brazil: 0.5, Germany: 0.7, Global: 0.9 },
+                languages: ['English', 'Japanese', 'German'],
+                downloadLinks: {
+                    playStore: 'https://play.google.com/store/apps/details?id=com.nintendo.zaka',
+                    appStore: 'https://apps.apple.com/app/mario-kart-tour/id1293634699',
+                    website: 'https://mariokarttour.com/'
+                }
+            },
+            {
+                name: 'Lumosity',
+                platforms: ['PC', 'Mobile'],
+                ageGroups: ['Adults', 'Seniors'],
+                types: ['Mobile Games', 'Time-Pass Games'],
+                benefits: ['Brain & Memory', 'Focus & Reflexes', 'Problem Solving'],
+                rating: '⭐⭐⭐⭐',
+                price: 'Free',
+                safety: 'Very Safe',
+                difficulty: 'Medium',
+                deviceRequirement: 2,
+                dataUsage: 'Low',
+                regionPopularity: { India: 0.5, USA: 0.9, Japan: 0.6, UK: 0.8, Brazil: 0.4, Germany: 0.7, Global: 0.7 },
+                languages: ['English', 'German'],
+                downloadLinks: {
+                    playStore: 'https://play.google.com/store/apps/details?id=com.lumoslabs.lumosity',
+                    appStore: 'https://apps.apple.com/app/lumosity-brain-training/id577232024',
+                    website: 'https://www.lumosity.com/'
+                }
+            }
+        ];
+
+        // Toggle region dropdown
+        function toggleRegionDropdown() {
+            const dropdown = document.getElementById('regionDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const regionSelector = document.querySelector('.region-selector');
+            const dropdown = document.getElementById('regionDropdown');
+            if (!regionSelector.contains(event.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        // Select region
+        function selectRegion(region) {
+            userAnswers.region = region;
+            document.getElementById('currentRegion').textContent = region;
+            
+            // Update selected state
+            document.querySelectorAll('.region-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            
+            // Close dropdown
+            document.getElementById('regionDropdown').classList.remove('active');
+            
+            // If on results page, refresh results
+            if (document.getElementById('resultsContainer').classList.contains('active')) {
+                showResults();
+            }
+        }
+
+        function startQuiz() {
+            document.getElementById('homeScreen').classList.add('hidden');
+            document.getElementById('quizContainer').style.display = 'block';
+            updateProgress(1);
+        }
+
+        function selectOption(questionNum, value) {
+            const cards = document.querySelectorAll(`#q${questionNum} .option-card`);
+            cards.forEach(card => card.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+
+            if (questionNum === 1) userAnswers.gameType = value;
+            if (questionNum === 2) userAnswers.platform = value;
+            if (questionNum === 3) userAnswers.ageGroup = value;
+
+            setTimeout(() => {
+                if (questionNum < 4) {
+                    nextQuestion(questionNum);
+                }
+            }, 300);
+        }
+
+        function toggleBenefit(element, benefit) {
+            element.classList.toggle('selected');
+            const index = userAnswers.benefits.indexOf(benefit);
+            if (index > -1) {
+                userAnswers.benefits.splice(index, 1);
+            } else {
+                userAnswers.benefits.push(benefit);
+            }
+        }
+
+        function nextQuestion(current) {
+            document.getElementById(`q${current}`).classList.remove('active');
+            document.getElementById(`q${current + 1}`).classList.add('active');
+            updateProgress(current + 1);
+        }
+
+        function previousQuestion(current) {
+            document.getElementById(`q${current}`).classList.remove('active');
+            document.getElementById(`q${current - 1}`).classList.add('active');
+            updateProgress(current - 1);
+        }
+
+        function updateProgress(step) {
+            const progress = (step / 4) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function calculateScore(game) {
+            let score = 0;
+            const reasons = [];
+
+            // CRITICAL FILTERS - Must match or game is excluded
+            if (!game.platforms.includes(userAnswers.platform)) return { score: 0, reasons: [] };
+            if (!game.ageGroups.includes(userAnswers.ageGroup)) return { score: 0, reasons: [] };
+            if (!game.types.includes(userAnswers.gameType)) return { score: 0, reasons: [] };
+            
+            // Check if game is blocked in region
+            if (game.blockedRegions && game.blockedRegions.includes(userAnswers.region)) {
+                return { score: 0, reasons: [] };
+            }
+
+            // BENEFITS MATCHING (10 points each)
+            let benefitMatches = 0;
+            userAnswers.benefits.forEach(benefit => {
+                if (game.benefits.includes(benefit)) {
+                    score += 10;
+                    benefitMatches++;
+                }
+            });
+            if (benefitMatches > 0) {
+                reasons.push(`Matches ${benefitMatches} of your selected benefits`);
+            }
+
+            // REGION POPULARITY BOOST (30 points max)
+            const regionPop = game.regionPopularity[userAnswers.region] || 0;
+            const regionScore = regionPop * 30;
+            score += regionScore;
+            
+            if (regionPop >= 0.8) {
+                reasons.push(`Very popular in ${userAnswers.region}`);
+            } else if (regionPop >= 0.5) {
+                reasons.push(`Popular in ${userAnswers.region}`);
+            }
+
+            // DEVICE COMPATIBILITY (20 points)
+            const regionProfile = REGION_PROFILES[userAnswers.region];
+            if (game.deviceRequirement <= regionProfile.avgDeviceLevel) {
+                score += 20;
+                if (regionProfile.avgDeviceLevel <= 2) {
+                    reasons.push('Works on budget devices');
+                }
+            }
+
+            // DATA USAGE CONSIDERATION (15 points)
+            if (game.dataUsage === 'Low' && regionProfile.limitedData) {
+                score += 15;
+                reasons.push('Low data usage');
+            }
+
+            // FREE GAME PREFERENCE (10 points)
+            if (game.price === 'Free' && regionProfile.prefersFree) {
+                score += 10;
+                reasons.push('Free to play');
+            }
+
+            // LANGUAGE SUPPORT (10 points)
+            if (game.languages && game.languages.includes(regionProfile.primaryLanguage)) {
+                score += 10;
+                reasons.push(`Supports ${regionProfile.primaryLanguage}`);
+            }
+
+            // SAFETY BONUS (15 points)
+            if (['Kids', 'Teens'].includes(userAnswers.ageGroup)) {
+                if (game.safety === 'Very Safe') {
+                    score += 15;
+                    reasons.push('Very safe for young players');
+                }
+            }
+
+            return { score, reasons };
+        }
+
+        function getRegionBadge(game) {
+            const popularity = game.regionPopularity[userAnswers.region] || 0;
+            
+            if (popularity >= 0.95) {
+                return '<span class="region-badge badge-top">🔥 #1 in ' + userAnswers.region + '</span>';
+            } else if (popularity >= 0.7) {
+                return '<span class="region-badge badge-popular">⭐ Popular in ' + userAnswers.region + '</span>';
+            } else if (popularity >= 0.5) {
+                return '<span class="region-badge badge-trending">📈 Trending in ' + userAnswers.region + '</span>';
+            } else if (popularity >= 0.3) {
+                return '<span class="region-badge badge-global">🌍 Global Favorite</span>';
+            }
+            return '';
+        }
+
+        function showResults() {
+            if (userAnswers.benefits.length === 0) {
+                alert('Please select at least one benefit!');
+                return;
+            }
+
+            const scoredGames = games
+                .map(game => {
+                    const result = calculateScore(game);
+                    return { game, score: result.score, reasons: result.reasons };
+                })
+                .filter(item => item.score > 0)
+                .sort((a, b) => b.score - a.score);
+
+            document.getElementById('quizContainer').style.display = 'none';
+            document.getElementById('resultsContainer').classList.add('active');
+            document.getElementById('resultCount').textContent = `🎉 We found ${scoredGames.length} games for you!`;
+
+            // Show current filters
+            const filtersHTML = `
+                <span class="filter-tag">🌍 ${userAnswers.region}</span>
+                <span class="filter-tag">📱 ${userAnswers.platform}</span>
+                <span class="filter-tag">👤 ${userAnswers.ageGroup}</span>
+                <span class="filter-tag">🎮 ${userAnswers.gameType}</span>
+            `;
+            document.getElementById('resultFilters').innerHTML = filtersHTML;
+
+            const gamesList = document.getElementById('gamesList');
+            gamesList.innerHTML = '';
+
+            scoredGames.forEach(({ game, reasons }) => {
+                const regionBadge = getRegionBadge(game);
+                const reasonsHTML = reasons.length > 0 ? `
+                    <div class="game-reason">
+                        <div class="reason-title">Why recommended:</div>
+                        ${reasons.map(r => '• ' + r).join('<br>')}
+                    </div>
+                ` : '';
+
+                // Generate download buttons based on available platforms
+                let downloadHTML = '<div class="download-buttons">';
+                
+                if (game.downloadLinks.playStore) {
+                    downloadHTML += `<a href="${game.downloadLinks.playStore}" target="_blank" class="download-btn btn-playstore">📱 Play Store</a>`;
+                }
+                if (game.downloadLinks.appStore) {
+                    downloadHTML += `<a href="${game.downloadLinks.appStore}" target="_blank" class="download-btn btn-appstore">🍎 App Store</a>`;
+                }
+                if (game.downloadLinks.steam) {
+                    downloadHTML += `<a href="${game.downloadLinks.steam}" target="_blank" class="download-btn btn-steam">🎮 Steam</a>`;
+                }
+                if (game.downloadLinks.website) {
+                    downloadHTML += `<a href="${game.downloadLinks.website}" target="_blank" class="download-btn btn-website">🌐 Website</a>`;
+                }
+                
+                downloadHTML += '</div>';
+
+                const gameCard = `
+                    <div class="game-card">
+                        <div class="game-header">
+                            <div class="game-title-section">
+                                <div class="game-title">${game.name}</div>
+                                ${regionBadge}
+                            </div>
+                            <div class="game-rating">${game.rating}</div>
+                        </div>
+                        <div class="game-meta">
+                            <span class="meta-tag">📍 ${game.platforms.join(', ')}</span>
+                            <span class="meta-tag">👤 ${game.ageGroups.join(', ')}</span>
+                            <span class="meta-tag">💰 ${game.price}</span>
+                            <span class="meta-tag">🛡️ ${game.safety}</span>
+                            <span class="meta-tag">📊 ${game.difficulty}</span>
+                            <span class="meta-tag">📶 ${game.dataUsage} Data</span>
+                        </div>
+                        <div class="game-benefits">
+                            ${game.benefits.map(b => `<span class="benefit-tag">${b}</span>`).join('')}
+                        </div>
+                        ${reasonsHTML}
+                        ${downloadHTML}
+                    </div>
+                `;
+                gamesList.innerHTML += gameCard;
+            });
+        }
+
+        function restartQuiz() {
+            userAnswers.gameType = '';
+            userAnswers.platform = '';
+            userAnswers.ageGroup = '';
+            userAnswers.benefits = [];
+
+            document.querySelectorAll('.option-card, .benefit-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            document.getElementById('resultsContainer').classList.remove('active');
+            document.getElementById('homeScreen').classList.remove('hidden');
+            document.getElementById('quizContainer').style.display = 'none';
+
+            document.querySelectorAll('.question-container').forEach(q => {
+                q.classList.remove('active');
+            });
+            document.getElementById('q1').classList.add('active');
+        }
+
+        // Auto-detect region on page load (simplified version)
+        window.addEventListener('load', function() {
+            // In a real implementation, you would use an IP geolocation API
+            // For now, we'll keep the default "India" 
+            // You can integrate with services like ipapi.co, ipgeolocation.io, etc.
+        });
+    </script>
+</body>
+</html>
